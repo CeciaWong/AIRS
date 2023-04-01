@@ -1,5 +1,4 @@
 if __name__ == '__main__':
-
     import argparse
     import itertools
     from torch.utils.data import DataLoader
@@ -9,6 +8,7 @@ if __name__ == '__main__':
     import torch
 
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    device_ids = range(torch.cuda.device_count())
 
     np.random.seed(0)
     torch.manual_seed(0)
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    
+
 
     parser = argparse.ArgumentParser(description="3cGAN")
     parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
@@ -86,6 +86,22 @@ if __name__ == '__main__':
         criterion_GAN.cuda()
         criterion_cycle.cuda()
         criterion_identity.cuda()
+    # using multiple GPUs
+    if len(device_ids)>1:
+        G_AB = nn.DataParallel(G_AB,device_ids)
+        G_BA = nn.DataParallel(G_BA,device_ids)
+        G_CB = nn.DataParallel(G_CB,device_ids)
+        G_BC = nn.DataParallel(G_BC,device_ids)
+        G_AC = nn.DataParallel(G_AC,device_ids)
+        G_CA = nn.DataParallel(G_CA,device_ids)
+
+        D_B1 = nn.DataParallel(D_B1,device_ids)
+        D_A2 = nn.DataParallel(D_A2,device_ids)
+        D_B3 = nn.DataParallel(D_B3,device_ids)
+        D_C4 = nn.DataParallel(D_C4,device_ids)
+        D_C5 = nn.DataParallel(D_C5,device_ids)
+        D_A6 = nn.DataParallel(D_A6,device_ids)
+
 
     if opt.epoch != 0:
         # Load pretrained models
