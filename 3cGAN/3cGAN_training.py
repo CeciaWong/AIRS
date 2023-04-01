@@ -7,7 +7,7 @@ if __name__ == '__main__':
     from utils import *
     import torch
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '2,3'
     device_ids = range(torch.cuda.device_count())
 
     np.random.seed(0)
@@ -16,7 +16,6 @@ if __name__ == '__main__':
     
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-
 
     parser = argparse.ArgumentParser(description="3cGAN")
     parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
@@ -27,7 +26,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--epoch", type=int, default=0, help="epoch to start training from")
     parser.add_argument("--n_epochs", type=int, default=51, help="number of epochs oef training")
-    parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
+    parser.add_argument("--batch_size", type=int, default=2, help="size of the batches")
     parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
     parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
     parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
@@ -202,15 +201,23 @@ if __name__ == '__main__':
     prev_time = time.time()
     for epoch in range(opt.epoch, opt.n_epochs):
         for i, batch in enumerate(dataloader):
-
             # Set model input
-            real_A = Variable(batch["A"].type(Tensor))
-            real_B = Variable(batch["B"].type(Tensor))
-            real_C = Variable(batch["C"].type(Tensor))
+            if len(device_ids)<=1:
+                real_A = Variable(batch["A"].type(Tensor))
+                real_B = Variable(batch["B"].type(Tensor))
+                real_C = Variable(batch["C"].type(Tensor))
+            else:
+                real_A = Variable(batch["A"].cuda().type(Tensor))
+                real_B = Variable(batch["B"].cuda().type(Tensor))
+                real_C = Variable(batch["C"].cuda().type(Tensor))
 
             # Adversarial ground truths
-            valid = Variable(Tensor(np.ones((real_A.size(0), *D_A2.output_shape))), requires_grad=False)
-            fake = Variable(Tensor(np.zeros((real_A.size(0), *D_A2.output_shape))), requires_grad=False)
+            if len(device_ids)<=1:
+                valid = Variable(Tensor(np.ones((real_A.size(0), *D_A2.output_shape))), requires_grad=False)
+                fake = Variable(Tensor(np.zeros((real_A.size(0), *D_A2.output_shape))), requires_grad=False)
+            else:
+                valid = Variable(Tensor(np.ones((real_A.size(0), *D_A2.module.output_shape))), requires_grad=False)
+                fake = Variable(Tensor(np.zeros((real_A.size(0), *D_A2.module.output_shape))), requires_grad=False)
 
             # ------------------
             #  Train Generators
@@ -224,7 +231,6 @@ if __name__ == '__main__':
             G_CA.train()
 
             optimizer_G.zero_grad()
-
 
             # GAN loss
             fake_B1 = G_AB(real_A)
@@ -405,8 +411,6 @@ if __name__ == '__main__':
                 )
             )
 
-
-
         # Update learning rates
         lr_scheduler_G.step()
         lr_scheduler_D_A2.step()
@@ -415,8 +419,6 @@ if __name__ == '__main__':
         lr_scheduler_D_C4.step()
         lr_scheduler_D_C5.step()
         lr_scheduler_D_A6.step()
-
-
 
         if opt.checkpoint_interval != -1 and epoch % opt.checkpoint_interval == 0:
             # Save model checkpoints
