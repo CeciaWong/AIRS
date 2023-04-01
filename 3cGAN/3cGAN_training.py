@@ -16,6 +16,7 @@ if __name__ == '__main__':
     
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    
 
     parser = argparse.ArgumentParser(description="3cGAN")
     parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
