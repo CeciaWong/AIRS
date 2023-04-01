@@ -8,6 +8,15 @@ if __name__ == '__main__':
     from utils import *
     import torch
 
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
+    np.random.seed(0)
+    torch.manual_seed(0)
+    torch.cuda.manual_seed_all(0)
+    
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
     parser = argparse.ArgumentParser(description="3cGAN")
     parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
     parser.add_argument("--training_dataset", type=str, default="ex-vivo", help="name of the dataset")
