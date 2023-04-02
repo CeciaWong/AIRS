@@ -7,7 +7,7 @@ if __name__ == '__main__':
     from utils import *
     import torch
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = '2,3'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
     device_ids = range(torch.cuda.device_count())
 
     np.random.seed(0)
@@ -18,6 +18,7 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = False
 
     parser = argparse.ArgumentParser(description="3cGAN")
+    parser.add_argument("-save_name", type=str, default=datetime.now().strftime("%m%d%H%M"), help="name of the network")
     parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
     parser.add_argument("--training_dataset", type=str, default="ex-vivo", help="name of the dataset")
     parser.add_argument("--testing_dataset", type=str, default="ex-vivo", help="name of the testing dataset")
@@ -26,7 +27,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--epoch", type=int, default=0, help="epoch to start training from")
     parser.add_argument("--n_epochs", type=int, default=51, help="number of epochs oef training")
-    parser.add_argument("--batch_size", type=int, default=2, help="size of the batches")
+    parser.add_argument("--batch_size", type=int, default=1*len(device_ids), help="size of the batches")
     parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
     parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
     parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
@@ -36,13 +37,14 @@ if __name__ == '__main__':
     parser.add_argument("--img_width", type=int, default=200, help="size of image width")
     parser.add_argument("--channels", type=int, default=1, help="number of image channels")
     parser.add_argument("--sample_interval", type=int, default=1, help="interval between saving generator outputs")
-    parser.add_argument("--checkpoint_interval", type=int, default=1, help="interval between saving model checkpoints")
+    parser.add_argument("--checkpoint_interval", type=int, default=10, help="interval between saving model checkpoints")
     parser.add_argument("--textfile_training_results_interval", type=int, default=50, help="textfile_training_results_interval")
     parser.add_argument("--n_residual_blocks", type=int, default=9, help="number of residual blocks in generator")
     parser.add_argument("--lambda_id", type=float, default=5.0, help="identity loss weight")
     opt = parser.parse_args()
-    print(opt)
 
+    print(opt)
+    sys.stdout.write("Begin time: %s")%(time.time())
     # Create sample and checkpoint directories
     os.makedirs("saved_models/%s-%s" % (opt.network_name, opt.training_dataset), exist_ok=True)
 
@@ -100,7 +102,6 @@ if __name__ == '__main__':
         D_C4 = nn.DataParallel(D_C4,device_ids)
         D_C5 = nn.DataParallel(D_C5,device_ids)
         D_A6 = nn.DataParallel(D_A6,device_ids)
-
 
     if opt.epoch != 0:
         # Load pretrained models
@@ -435,7 +436,7 @@ if __name__ == '__main__':
             torch.save(D_C4.state_dict(), "saved_models/%s-%s/%s-%s-D_C4-%dep.pth" % (opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
             torch.save(D_C5.state_dict(), "saved_models/%s-%s/%s-%s-D_C5-%dep.pth" % (opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
             torch.save(D_A6.state_dict(), "saved_models/%s-%s/%s-%s-D_A6-%dep.pth" % (opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-
+    sys.stdout.write("End time: %s")%(time.time())
 
 
 
