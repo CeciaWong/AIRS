@@ -1,1 +1,9 @@
-C:/Progra~1/Git/bin/bash "train.sh"
+#windows下vscode中训练测试示例
+C:/Progra~1/Git/bin/bash "train_win.sh" “0,1,2,3" "040311"
+C:/Progra~1/Git/bin/bash "test_win.sh" “0,1,2,3" "040311" "50"
+
+#linux下vscode中训练示例
+sh /media/wxx/AIRS/3cGAN/train_linux.sh "0,1" "040312"
+sh /media/wxx/AIRS/3cGAN/test_linux.sh "0,1" "040312" "50”
+
+
