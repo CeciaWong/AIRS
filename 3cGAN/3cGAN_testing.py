@@ -4,19 +4,30 @@ from models import *
 from datasets import *
 from utils import *
 import torch
+from datetime import datetime
 print(torch.__version__)
 
+#os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
+device_ids = range(torch.cuda.device_count())
+
+np.random.seed(0)
+torch.manual_seed(0)
+torch.cuda.manual_seed_all(0)
+
 parser = argparse.ArgumentParser()
+
+""" file folder's name of models to be tested """
+parser.add_argument("-test_model", type=str, default=datetime.now().strftime("%m%d%H%M"), help="name of the network")
+""" test epoch """
+parser.add_argument("--epoch", type=int, default=50, help="epoch to start training from")
 
 parser.add_argument("-network_name", type=str, default="3cGAN", help="name of the network")
 parser.add_argument("--dataset_name", type=str, default="ex-vivo", help="name of the training dataset")
 parser.add_argument("--testing_dataset", type=str, default="ex-vivo", help="name of the testing dataset")
 parser.add_argument("--lambda_cyc", type=float, default=0.1, help="cycle loss weight")
 
-
-parser.add_argument("--epoch", type=int, default=50, help="epoch to start training from")
 parser.add_argument("--n_epochs", type=int, default=51, help="number of epochs of training")
-parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
+parser.add_argument("--batch_size", type=int, default=2*len(device_ids), help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
 parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
@@ -46,8 +57,7 @@ G_AB = GeneratorResNet(input_shape, opt.n_residual_blocks)
 if cuda:
     G_AB = G_AB.cuda()
 
-G_AB.load_state_dict(torch.load("saved_models/%s-%s-G_AB-%dep.pth" % (opt.network_name, opt.dataset_name, opt.epoch)))
-
+G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AB-%dep.pth" % (opt.save_name, opt.network_name, opt.dataset_name, opt.epoch)))
 Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
 # Buffers of previously generated samples
@@ -60,20 +70,20 @@ transforms_testing_non_fliped_ = [
 
 # Test data loader - non flipped
 val_dataloader_non_flipped = DataLoader(
-    ImageDataset("../data/Testing/%s-testing" % opt.testing_dataset, transforms_=transforms_testing_non_fliped_, unaligned=False),
+    ImageDataset("../3cGAN_dataset/Testing/%s-testing" % opt.testing_dataset, transforms_=transforms_testing_non_fliped_, unaligned=False),
     batch_size=1,
     shuffle=False,
     num_workers=0,
 )
 
 def testing():
-    os.makedirs("images/%s-Est-Depths" % (opt.network_name), exist_ok=True)
+    os.makedirs("../3cGAN_test_outputs/%s-Est-Depths" % (opt.network_name), exist_ok=True)
     G_AB.eval()
 
     for i, batch in enumerate(val_dataloader_non_flipped):
         real_A = Variable(batch["A"].type(Tensor))
         fake_B1 = G_AB(real_A)
-        save_image(fake_B1, "images/%s-Est-Depths/%s-Est-Depths-%s.png" % (opt.network_name,opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_B1, "../3cGAN_test_outputs/%s-Est-Depths/%s-Est-Depths-%s.png" % (opt.network_name,opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
 testing()
 
 
