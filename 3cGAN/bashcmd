@@ -1,8 +1,8 @@
-#windows下vscode中训练测试示例
+#windows下vscode中训练测试示例,在E:\AIRS\AIRS\3cGAN目录下执行
 C:/Progra~1/Git/bin/bash "train_win.sh" “0,1,2,3" "040311"
 C:/Progra~1/Git/bin/bash "test_win.sh" “0,1,2,3" "040311" "50"
 
-#linux下vscode中训练示例
+#linux下vscode中训练示例，在/media/wxx目录下执行
 sh /media/wxx/AIRS/3cGAN/train_linux.sh "0,1" "040312"
 sh /media/wxx/AIRS/3cGAN/test_linux.sh "0,1" "040312" "50”
 

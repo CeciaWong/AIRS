@@ -1,11 +1,20 @@
 import glob
 import random
 import os
-
+import platform
 from torch.utils.data import Dataset
 from PIL import Image
 import torchvision.transforms as transforms
 
+def isWindows():
+    sysstr = platform.system()
+    if (sysstr == "Windows"):
+        return True
+    elif (sysstr == "Linux"):
+        return False
+    else:
+        print ("Other System ")
+    return False
 
 def to_rgb(image):
     rgb_image = Image.new("RGB", image.size)
@@ -18,9 +27,14 @@ class ImageDataset(Dataset):
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
 
-        self.files_A = sorted(glob.glob(os.path.join(root, "A") + "/*.*"))
-        self.files_B = sorted(glob.glob(os.path.join(root, "B") + "/*.*"))
-        self.files_C = sorted(glob.glob(os.path.join(root, "C") + "/*.*"))
+        if isWindows():
+            self.files_A = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/A/*"))
+            self.files_B = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/B/*"))
+            self.files_C = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/C/*"))
+        else:
+            self.files_A = sorted(glob.glob(os.path.join(root, "A") + "/*.*"))
+            self.files_B = sorted(glob.glob(os.path.join(root, "B") + "/*.*"))
+            self.files_C = sorted(glob.glob(os.path.join(root, "C") + "/*.*"))
         # self.files_A = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/A/*"))
         # self.files_B = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/B/*"))
         # self.files_C = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/C/*"))

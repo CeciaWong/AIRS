@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser.add_argument("--epoch", type=int, default=0, help="epoch to start training from")
     parser.add_argument("--n_epochs", type=int, default=51, help="number of epochs oef training")
     parser.add_argument("--batch_size", type=int, default=1*len(device_ids), help="size of the batches")
-    parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
+    parser.add_argument("--lr", type=float, default=0.0001, help="adam: learning rate")
     parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
     parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
     parser.add_argument("--decay_epoch", type=int, default=25, help="epoch from which to start lr decay")
@@ -128,20 +128,34 @@ if __name__ == '__main__':
 
     if opt.epoch != 0:
         # Load pretrained models
-        G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        G_CB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        G_BC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        G_AC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        G_CA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+        if isWindows():
+            G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_CB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_BC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_AC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_CA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
 
-        D_B1.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B1_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        D_A2.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A2_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        D_B3.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B3_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        D_C4.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C4_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        D_C5.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C5_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
-        D_A6.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A6_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_B1.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B1_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_A2.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A2_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_B3.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B3_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_C4.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C4_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_C5.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C5_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_A6.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A6_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+        else:
+            G_AB.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_AB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_BA.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_BA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_CB.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_CB_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_BC.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_BC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_AC.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_AC_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            G_CA.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_CA_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
 
+            D_B1.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_B1_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_A2.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_A2_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_B3.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_B3_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_C4.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_C4_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_C5.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_C5_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
+            D_A6.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/D_A6_%d.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.epoch)))
     else:
         # Initialize weights
         G_AB.apply(weights_init_normal)
@@ -213,7 +227,7 @@ if __name__ == '__main__':
     # Training data loader
     if isWindows():
         dataloader = DataLoader(
-            ImageDataset("../3cGAN_dataset/Training/%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=True),
+            ImageDataset("E:\\AIRS\\AIRS\\3cGAN_saved_models\\%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=True),
             batch_size=opt.batch_size,
             shuffle=True,
             num_workers=opt.n_cpu,
@@ -468,21 +482,37 @@ if __name__ == '__main__':
         lr_scheduler_D_C5.step()
         lr_scheduler_D_A6.step()
 
-        if opt.checkpoint_interval != -1 and (epoch % opt.checkpoint_interval == 0 or n_epochs - epoch < 5):
+        if opt.checkpoint_interval != -1 and (epoch % opt.checkpoint_interval == 0 or opt.n_epochs - epoch < 5):
             # Save model checkpoints
-            torch.save(G_AB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AB-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            torch.save(G_BA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BA-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            torch.save(G_CB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CB-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(G_BC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(G_AC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(G_CA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CA-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+            if isWindows():
+                torch.save(G_AB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AB-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(G_BA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BA-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(G_CB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CB-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_BC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_AC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_CA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CA-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
 
-            torch.save(D_B1.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B1-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            torch.save(D_A2.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            torch.save(D_B3.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B3-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(D_C4.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C4-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(D_C5.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C5-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            torch.save(D_A6.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A6-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_B1.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B1-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(D_A2.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(D_B3.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B3-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_C4.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C4-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_C5.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C5-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_A6.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A6-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+            else:
+                torch.save(G_AB.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_AB-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(G_BA.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_BA-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(G_CB.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_CB-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_BC.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_BC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_AC.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_AC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(G_CA.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_CA-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+
+                torch.save(D_B1.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_B1-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(D_A2.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(D_B3.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_B3-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_C4.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_C4-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_C5.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_C5-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+                torch.save(D_A6.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_A6-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
+           
     print("End time:"+datetime.datetime.now().strftime("%y-%m-%d %H:%M"))
 
 
