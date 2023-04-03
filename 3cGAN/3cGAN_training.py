@@ -507,7 +507,7 @@ if __name__ == '__main__':
                 torch.save(G_CA.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-G_CA-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
 
                 torch.save(D_B1.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_B1-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-                torch.save(D_A2.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
+                torch.save(D_A2.state_dict(), "s3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
                 torch.save(D_B3.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_B3-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
                 torch.save(D_C4.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_C4-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
                 torch.save(D_C5.state_dict(), "3cGAN_saved_models/%s-%s-%s/%s-%s-D_C5-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))

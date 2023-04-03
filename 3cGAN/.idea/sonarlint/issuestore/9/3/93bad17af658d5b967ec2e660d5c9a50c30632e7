@@ -1,0 +1,9 @@
+
+_python:S2208"GImport only needed names or import the module and then use its members.(Òí
+_python:S2208"GImport only needed names or import the module and then use its members.(‘›…¾
+_python:S2208"GImport only needed names or import the module and then use its members.(É™ùÖ
+lpython:S1542"ORename function "isWindows" to match the regular expression ^[a-z_][a-z0-9_]*$.(³€çüÿÿÿÿ
+Epython:S1172"-Remove the unused function parameter "frame".(ÛÙ’Ù
+Fpython:S1172".Remove the unused function parameter "signum".(ÛÙ’Ù
+5python:S125 "Remove this commented out code.(ïÏ©U
+<python:S125Ì"Remove this commented out code.(Ê¨¶·øÿÿÿÿ
