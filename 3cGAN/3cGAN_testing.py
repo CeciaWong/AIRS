@@ -75,8 +75,14 @@ transforms_testing_non_fliped_ = [
 ]
 
 # Test data loader - non flipped
+# val_dataloader_non_flipped = DataLoader(
+#     ImageDataset("../3cGAN_dataset/Testing/%s-testing" % opt.testing_dataset, transforms_=transforms_testing_non_fliped_, unaligned=False),
+#     batch_size=1,
+#     shuffle=False,
+#     num_workers=0,
+# )
 val_dataloader_non_flipped = DataLoader(
-    ImageDataset("../3cGAN_dataset/Testing/%s-testing" % opt.testing_dataset, transforms_=transforms_testing_non_fliped_, unaligned=False),
+    ImageDataset("", transforms_=transforms_testing_non_fliped_, unaligned=False),
     batch_size=1,
     shuffle=False,
     num_workers=0,

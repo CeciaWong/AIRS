@@ -2,11 +2,13 @@
 #arg1 available gpus 
 #arg2 timestamp as save_name
 #arg3 test epoch
-C:/Progra~1/Git/bin/bash "train_win.sh" “0,1,2,3" "04031120"
-C:/Progra~1/Git/bin/bash "test_win.sh" “0,1,2,3" "04031120" "50"
+C:/Progra~1/Git/bin/bash "train_win.sh" "0,1,2,3" "04031120"
+C:/Progra~1/Git/bin/bash "test_win.sh" "0,1,2,3" "04031120" "50"
 
 #linux下vscode中训练示例，在/media/wxx目录下执行
 sh /media/wxx/AIRS/3cGAN/train_linux.sh "0,1" "04031220"
 sh /media/wxx/AIRS/3cGAN/test_linux.sh "0,1" "04031220" "50"
 
 
+从本地复制文件夹到服务器
+scp -r /home/myfile/ root@192.168.1.100:/data/
