@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument("--lambda_cyc", type=float, default=1, help="cycle loss weight")
 
     parser.add_argument("--epoch", type=int, default=0, help="epoch to start training from")
-    parser.add_argument("--n_epochs", type=int, default=30, help="number of epochs oef training")
+    parser.add_argument("--n_epochs", type=int, default=50, help="number of epochs oef training")
     parser.add_argument("--batch_size", type=int, default=1*len(device_ids), help="size of the batches")
     parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
     parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first order momentum of gradient")
@@ -227,7 +227,7 @@ if __name__ == '__main__':
     # Training data loader
     if isWindows():
         dataloader = DataLoader(
-            ImageDataset("E:\\AIRS\\AIRS\\3cGAN_saved_models\\%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=True),
+            ImageDataset("E:/AIRS/AIRS/3cGAN_dataset/Training/%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=True),
             batch_size=opt.batch_size,
             shuffle=True,
             num_workers=opt.n_cpu,
@@ -457,21 +457,7 @@ if __name__ == '__main__':
                 )
             )
 
-            # if force_stop:
-            #     torch.save(G_AB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AB-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            #     torch.save(G_BA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BA-%dep.pth" % (opt.save_name, opt.network_name,opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            #     torch.save(G_CB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CB-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(G_BC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_BC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(G_AC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_AC-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(G_CA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-G_CA-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-
-            #     torch.save(D_B1.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B1-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            #     torch.save(D_A2.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A2-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name,opt.training_dataset, epoch))
-            #     torch.save(D_B3.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_B3-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(D_C4.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C4-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(D_C5.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_C5-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     torch.save(D_A6.state_dict(), "../3cGAN_saved_models/%s-%s-%s/%s-%s-D_A6-%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, opt.network_name, opt.training_dataset, epoch))
-            #     exit(500)
+            
 
         # Update learning rates
         lr_scheduler_G.step()

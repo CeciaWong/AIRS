@@ -1,0 +1,2 @@
+Namespace(save_name='test_dataset_module', network_name='3cGAN', training_dataset='ex-vivo', testing_dataset='ex-vivo', lambda_merging=10, lambda_cyc=1, epoch=0, n_epochs=30, batch_size=4, lr=0.0002, b1=0.5, b2=0.999, decay_epoch=1, n_cpu=8, img_height=200, img_width=200, channels=1, sample_interval=1, checkpoint_interval=10, textfile_training_results_interval=50, n_residual_blocks=9, lambda_id=5.0)
+Begin time:23-04-04 13:31

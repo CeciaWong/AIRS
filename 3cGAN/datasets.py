@@ -27,17 +27,17 @@ class ImageDataset(Dataset):
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
 
-        if isWindows():
-            self.files_A = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/A/*"))
-            self.files_B = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/B/*"))
-            self.files_C = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/C/*"))
-        else:
-            self.files_A = sorted(glob.glob(os.path.join(root, "A") + "/*.*"))
-            self.files_B = sorted(glob.glob(os.path.join(root, "B") + "/*.*"))
-            self.files_C = sorted(glob.glob(os.path.join(root, "C") + "/*.*"))
-        # self.files_A = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/A/*"))
-        # self.files_B = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/B/*"))
-        # self.files_C = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/C/*"))
+        # if isWindows():
+        #     self.files_A = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/A/*"))
+        #     self.files_B = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/B/*"))
+        #     self.files_C = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/C/*"))
+        # else:
+        # self.files_A = sorted(glob.glob(os.path.join(root, "A") + "/*.*"))
+        # self.files_B = sorted(glob.glob(os.path.join(root, "B") + "/*.*"))
+        # self.files_C = sorted(glob.glob(os.path.join(root, "C") + "/*.*"))
+        self.files_A = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/A/*"))
+        self.files_B = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/B/*"))
+        self.files_C = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Training/C/*"))
         # self.files_A = sorted(glob.glob(root+"/A/*"))
         # self.files_B = sorted(glob.glob(root+"/B/*"))
         # self.files_C = sorted(glob.glob(root+"/C/*"))
