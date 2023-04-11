@@ -63,6 +63,6 @@ def read_log(file_name):
         return setting, Dloss,Gloss,adv,cycle
 
 if __name__ == '__main__':
-    file_name = "4GPUs_test.log"
+    file_name = "04091142.log"
     setting, Dloss,Gloss,adv,cycle=read_log(file_name)
     draw_curve(file_name, setting, Dloss,Gloss,adv,cycle)
