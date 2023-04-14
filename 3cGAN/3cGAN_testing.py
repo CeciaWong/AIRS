@@ -67,8 +67,8 @@ if isWindows():
     G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
     G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 else:
-    G_AB.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
-    G_BA.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
+    G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
+    G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 
 Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
