@@ -27,20 +27,10 @@ class ImageDataset(Dataset):
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
 
-        if isWindows():
-            self.files_A = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/A/*"))
-            self.files_B = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/B/*"))
-            self.files_C = sorted(glob.glob("E:/AIRS/AIRS/3cGAN_dataset/Training/C/*"))
-        else:
-            self.files_A = sorted(glob.glob(os.path.join(root, "A") + "/*.*"))
-            self.files_B = sorted(glob.glob(os.path.join(root, "B") + "/*.*"))
-            self.files_C = sorted(glob.glob(os.path.join(root, "C") + "/*.*"))
-        # self.files_A = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Testing/A/*"))
-        # self.files_B = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Testing/B/*"))
-        # self.files_C = sorted(glob.glob("E:/AIRS/Visually_Navigated_Bronchoscopy/3cGAN/data/Testing/C/*"))
-        # self.files_A = sorted(glob.glob(root+"/A/*"))
-        # self.files_B = sorted(glob.glob(root+"/B/*"))
-        # self.files_C = sorted(glob.glob(root+"/C/*"))
+        print(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "A", "*"))
+        self.files_A = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "A", "*")))
+        self.files_B = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "B", "*")))
+        self.files_C = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "C", "*")))
 
 
     def __getitem__(self, index):
@@ -59,7 +49,6 @@ class ImageDataset(Dataset):
             #image_B = image_B.convert('L')
 
         image_C = Image.open(self.files_C[index % len(self.files_C)])
-
 
         # Banach modified 20/04/20 - so that we estimate a grayscale depth map
         # if image_B.mode != "RGB":
