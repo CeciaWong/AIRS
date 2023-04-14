@@ -5,6 +5,7 @@ from datasets import *
 from utils import *
 import torch
 from datetime import datetime
+import numpy as np
 print(torch.__version__)
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
@@ -53,16 +54,21 @@ cuda = torch.cuda.is_available()
 input_shape = (opt.channels, opt.img_height, opt.img_width)
 # Initialize generator and discriminator
 G_AB = GeneratorResNet(input_shape, opt.n_residual_blocks)
+G_BA = GeneratorResNet(input_shape, opt.n_residual_blocks)
 
 if cuda:
     G_AB = G_AB.cuda()
+    G_BA = G_BA.cuda()
 if len(device_ids)>1:
     G_AB = nn.DataParallel(G_AB,device_ids)
+    G_BA = nn.DataParallel(G_BA,device_ids)
 
 if isWindows():
     G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
+    G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 else:
     G_AB.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
+    G_BA.load_state_dict(torch.load("3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 
 Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
@@ -90,18 +96,32 @@ val_dataloader_non_flipped = DataLoader(
 
 def testing():
     if isWindows():
-        os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        #os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        #os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        
     else:
-        os.makedirs("3cGAN_test_outputs/%s-%sep-%s-Est-Depths" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        #os.makedirs("3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        #os.makedirs("3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        os.makedirs("3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
+        
     G_AB.eval()
+    G_BA.eval()
 
     for i, batch in enumerate(val_dataloader_non_flipped):
         real_A = Variable(batch["A"].type(Tensor))
         fake_B1 = G_AB(real_A)
+        fake_BtoA = G_BA(fake_B1)
+        #display_img = torch.stack([np.expand_dims(batch["A"],0),np.expand_dims(fake_B1.cpu().detach().numpy(),0),np.expand_dims(fake_BtoA.cpu().detach().numpy(),0)],dim=0) 
+        display_img = torch.stack([real_A.squeeze(0).cpu(), fake_B1.squeeze(0).cpu(),fake_BtoA.squeeze(0).cpu()],0)
         if isWindows():
-            save_image(fake_B1, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
+            #save_image(fake_B1, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
+            #save_image(fake_BtoA, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
+            save_image(display_img, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
         else:
-            save_image(fake_B1, "3cGAN_test_outputs/%s-%sep-%s-Est-Depths/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
+            #save_image(fake_B1, "3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
+            #save_image(fake_BtoA, "3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
+            save_image(display_img,"3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
 testing()
 
 
