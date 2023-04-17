@@ -63,7 +63,6 @@ if len(device_ids)>1:
     G_AB = nn.DataParallel(G_AB,device_ids)
     G_BA = nn.DataParallel(G_BA,device_ids)
 
-
 G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.test_model, opt.network_name, opt.dataset_name, opt.epoch)))
 
@@ -84,6 +83,7 @@ val_dataloader_non_flipped = DataLoader(
     num_workers=0,
 )
 
+
 def testing():
     #os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
     #os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
@@ -100,6 +100,8 @@ def testing():
         #save_image(fake_B1, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
         #save_image(fake_BtoA, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeBtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False) #range= (0,128)
         save_image(display_img, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, i),normalize=False, scale_each=False)
-    testing()
+
+testing()
+
 
 

@@ -28,13 +28,15 @@ def draw_curve(file_name, setting, Dloss,Gloss,adv,cycle):
     plt.legend()
     plt.savefig(file_name.strip('.log')+".png",bbox_inches='tight')
     plt.show()
+    time.sleep(2)
+    plt.close()
     return None
 
-def read_log(file_name):
+def read_log(file_name, isval):
     Dloss,Gloss,adv,cycle = [],[],[],[]
     dloss,gloss,advloss,cycleloss = [],[],[],[]
     with open(file_name) as f:
-        epoch = 0
+        epoch = 1
         while True:
             lines = f.readline()
             if lines.startswith("Namespace"):
@@ -46,9 +48,13 @@ def read_log(file_name):
                     adv.append(np.mean(advloss))
                     cycle.append(np.mean(cycleloss))
                 break
-            if not lines.startswith("[Epoch"):
-                continue
-            epoch_now = int(lines.split("/", 1)[0].lstrip("[Epoch "))
+            if not isval:
+                if not lines.startswith("[Epoch"):
+                    continue
+            if isval:
+                if not lines.startswith("*[Epoch"):
+                    continue
+            epoch_now = int(lines.split("/", 1)[0].lstrip("*").lstrip("[Epoch "))
             if epoch_now != epoch:
                 epoch = epoch_now
                 Dloss.append(np.mean(dloss))
@@ -64,5 +70,6 @@ def read_log(file_name):
 
 if __name__ == '__main__':
     file_name = "04091142.log"
-    setting, Dloss,Gloss,adv,cycle=read_log(file_name)
-    draw_curve(file_name, setting, Dloss,Gloss,adv,cycle)
+    for isval in [False, True]:
+        setting, Dloss,Gloss,adv,cycle=read_log(file_name,isval)
+        draw_curve(file_name, setting, Dloss,Gloss,adv,cycle,isval)

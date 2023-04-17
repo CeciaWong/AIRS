@@ -6,16 +6,6 @@ from torch.utils.data import Dataset
 from PIL import Image
 import torchvision.transforms as transforms
 
-def isWindows():
-    sysstr = platform.system()
-    if (sysstr == "Windows"):
-        return True
-    elif (sysstr == "Linux"):
-        return False
-    else:
-        print ("Other System ")
-    return False
-
 def to_rgb(image):
     rgb_image = Image.new("RGB", image.size)
     rgb_image.paste(image)
@@ -27,7 +17,6 @@ class ImageDataset(Dataset):
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
 
-        print(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "A", "*"))
         self.files_A = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "A", "*")))
         self.files_B = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "B", "*")))
         self.files_C = sorted(glob.glob(os.path.join(os.pardir, "3cGAN_dataset", root.split('/')[0], root.split('/')[1], "C", "*")))
