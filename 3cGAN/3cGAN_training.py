@@ -23,10 +23,11 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = False
 
     parser = argparse.ArgumentParser(description="3cGAN")
+    parser.add_argument("--isunaligned", type=int, default=1)
     parser.add_argument("--save_name", type=str, default=datetime.datetime.now().strftime("%m%d%H%M"), help="name of the network")
     parser.add_argument("--network_name", type=str, default="3cGAN", help="name of the network")
-    parser.add_argument("--training_dataset", type=str, default="ex-vivo", help="name of the dataset")
-    parser.add_argument("--testing_dataset", type=str, default="ex-vivo", help="name of the testing dataset")
+    parser.add_argument("--training_dataset", type=str, default="osteo", help="name of the dataset")
+    parser.add_argument("--testing_dataset", type=str, default="osteo", help="name of the testing dataset")
     parser.add_argument("--lambda_merging", type=float, default=10, help="scaling factor for the new loss")
     parser.add_argument("--lambda_cyc", type=float, default=1, help="cycle loss weight")
 
@@ -42,9 +43,9 @@ if __name__ == '__main__':
     parser.add_argument("--img_width", type=int, default=200, help="size of image width")
     parser.add_argument("--channels", type=int, default=1, help="number of image channels")
     parser.add_argument("--sample_interval", type=int, default=1, help="interval between saving generator outputs")
-    parser.add_argument("--checkpoint_interval", type=int, default=5, help="interval between saving model checkpoints")
+    parser.add_argument("--checkpoint_interval", type=int, default=10, help="interval between saving model checkpoints")
     parser.add_argument("--textfile_training_results_interval", type=int, default=50, help="textfile_training_results_interval")
-    parser.add_argument("--n_residual_blocks", type=int, default=9, help="number of residual blocks in generator")
+    parser.add_argument("--n_residual_blocks", type=int, default=6, help="number of residual blocks in generator")
     parser.add_argument("--lambda_id", type=float, default=5.0, help="identity loss weight")
     opt = parser.parse_args()
 
@@ -191,7 +192,7 @@ if __name__ == '__main__':
 
 
     dataloader = DataLoader(
-        ImageDataset("Training/%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=True),
+        ImageDataset("Training/%s-training" % opt.training_dataset, transforms_=transforms_, unaligned=opt.isunaligned),
         batch_size=opt.batch_size,
         shuffle=True,
         num_workers=opt.n_cpu,
@@ -202,7 +203,7 @@ if __name__ == '__main__':
     ]
 
     val_dataloader_non_flipped = DataLoader(
-        ImageDataset("Testing/%s-testing" % opt.training_dataset, transforms_=transforms_testing_non_fliped_, unaligned=False),
+        ImageDataset("Testing/%s-testing" % opt.training_dataset, transforms_=transforms_testing_non_fliped_, unaligned=0),
         batch_size=1,
         shuffle=False,
         num_workers=0,

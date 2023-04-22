@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
-def draw_curve(file_name, setting, Dloss,Gloss,adv,cycle):
+def draw_curve(file_name, setting, Dloss,Gloss,adv,cycle,isval):
     x = list(range(len(Dloss)))
     plt.figure(figsize=(27*0.8,4))
     plt.suptitle(file_name.strip('.log')+"\n"+setting,fontsize=10)
@@ -12,7 +13,8 @@ def draw_curve(file_name, setting, Dloss,Gloss,adv,cycle):
     plt.plot(x, cycle, color = "orange", label = "cycle")
     plt.legend()
     plt.xlabel("epoch")
-    plt.ylabel("loss")
+    savesign = "val" if isval else "train"
+    plt.ylabel(savesign+" loss")
     ax2=plt.subplot(152)
     plt.plot(x, Gloss, color = "blue", label = "G loss")
     plt.legend()
@@ -26,7 +28,7 @@ def draw_curve(file_name, setting, Dloss,Gloss,adv,cycle):
     plt.plot(x, cycle, color = "orange", label = "cycle")
     plt.xticks(range(0,len(Dloss),10))
     plt.legend()
-    plt.savefig(file_name.strip('.log')+".png",bbox_inches='tight')
+    plt.savefig(file_name.strip('.log')+"_"+savesign+".png",bbox_inches='tight')
     plt.show()
     time.sleep(2)
     plt.close()
@@ -69,7 +71,7 @@ def read_log(file_name, isval):
         return setting, Dloss,Gloss,adv,cycle
 
 if __name__ == '__main__':
-    file_name = "04091142.log"
+    file_name = "rb3.log"
     for isval in [False, True]:
         setting, Dloss,Gloss,adv,cycle=read_log(file_name,isval)
         draw_curve(file_name, setting, Dloss,Gloss,adv,cycle,isval)

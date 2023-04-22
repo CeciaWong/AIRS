@@ -13,7 +13,7 @@ def to_rgb(image):
 
 
 class ImageDataset(Dataset):
-    def __init__(self, root, transforms_=None, unaligned=False):
+    def __init__(self, root, transforms_=None, unaligned=0):
         self.transform = transforms.Compose(transforms_)
         self.unaligned = unaligned
 
@@ -27,8 +27,10 @@ class ImageDataset(Dataset):
 
         if self.unaligned:
             image_B = Image.open(self.files_B[random.randint(0, len(self.files_B) - 1)])
+            image_C = Image.open(self.files_C[random.randint(0, len(self.files_C) - 1)])
         else:
             image_B = Image.open(self.files_B[index % len(self.files_B)])
+            image_C = Image.open(self.files_C[index % len(self.files_C)])
 
         # Convert grayscale images to rgb
         #if image_A.mode != "L":
@@ -37,7 +39,7 @@ class ImageDataset(Dataset):
         #if image_B.mode != "L":
             #image_B = image_B.convert('L')
 
-        image_C = Image.open(self.files_C[index % len(self.files_C)])
+        
 
         # Banach modified 20/04/20 - so that we estimate a grayscale depth map
         # if image_B.mode != "RGB":
