@@ -24,6 +24,7 @@ class ImageDataset(Dataset):
 
     def __getitem__(self, index):
         image_A = Image.open(self.files_A[index % len(self.files_A)])
+        num = self.files_A[index % len(self.files_A)].split("osteo")[1].split("A")[1].strip(".png").strip("\\").strip("/")
 
         if self.unaligned:
             image_B = Image.open(self.files_B[random.randint(0, len(self.files_B) - 1)])
@@ -53,7 +54,7 @@ class ImageDataset(Dataset):
         item_A = self.transform(image_A)
         item_B = self.transform(image_B)
         item_C = self.transform(image_C)
-        return {"A": item_A, "B": item_B, "C": item_C}
+        return {"A": item_A, "B": item_B, "C": item_C, "num": num}
 
     def __len__(self):
         return max(len(self.files_A), len(self.files_B), len(self.files_C))
