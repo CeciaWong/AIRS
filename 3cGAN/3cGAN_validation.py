@@ -23,10 +23,12 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = False
 
     parser = argparse.ArgumentParser(description="3cGAN")
+    parser.add_argument("--ismerged", type=int, default=1)
+    parser.add_argument("--mergew", type=str, default="100000")
     parser.add_argument("--save_name", type=str, default=datetime.datetime.now().strftime("%m%d%H%M"), help="name of the network")
     parser.add_argument("--network_name", type=str, default="3cGAN", help="name of the network")
-    parser.add_argument("--training_dataset", type=str, default="ex-vivo", help="name of the dataset")
-    parser.add_argument("--testing_dataset", type=str, default="ex-vivo", help="name of the testing dataset")
+    parser.add_argument("--training_dataset", type=str, default="osteo", help="name of the dataset")
+    parser.add_argument("--testing_dataset", type=str, default="osteo", help="name of the testing dataset")
     parser.add_argument("--lambda_merging", type=float, default=10, help="scaling factor for the new loss")
     parser.add_argument("--lambda_cyc", type=float, default=1, help="cycle loss weight")
 
@@ -51,7 +53,7 @@ if __name__ == '__main__':
     print(opt)
     print("Begin time:"+datetime.datetime.now().strftime("%y-%m-%d %H:%M"))
     # Create sample and checkpoint directories
-    os.makedirs("../3cGAN_saved_models/%s-%s-%s" % (opt.save_name, opt.network_name, opt.training_dataset), exist_ok=True)
+    os.makedirs("../3cGAN_saved_models/%s-%s-%s" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset), exist_ok=True)
     # Losses
     criterion_GAN = torch.nn.MSELoss()
     criterion_cycle = torch.nn.MSELoss()
@@ -216,19 +218,19 @@ if __name__ == '__main__':
     prev_time = time.time()
     
     for epoch in range(opt.epoch, opt.n_epochs+1):
-        G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        G_CB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CB_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        G_BC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BC_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        G_AC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AC_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        G_CA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CA_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
+        G_AB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        G_BA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        G_CB.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CB_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        G_BC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_BC_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        G_AC.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_AC_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        G_CA.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/G_CA_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
 
-        D_B1.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B1_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        D_A2.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A2_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        D_B3.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B3_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        D_C4.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C4_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        D_C5.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C5_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
-        D_A6.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A6_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch)))
+        D_B1.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B1_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        D_A2.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A2_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        D_B3.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_B3_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        D_C4.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C4_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        D_C5.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_C5_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
+        D_A6.load_state_dict(torch.load("../3cGAN_saved_models/%s-%s-%s/D_A6_%dep.pth" % (opt.save_name.strip("_val"), opt.network_name, opt.training_dataset, epoch)))
     
         """
         for i, batch in enumerate(dataloader):
@@ -517,17 +519,48 @@ if __name__ == '__main__':
             loss_cycle_CA = criterion_cycle(recov_CA, real_A)
 
             # merging loss:
-            recov_253461 = G_AB(G_CA(G_BC(G_CB(G_AC(G_BA(real_B))))))
-            loss_cycle_253461 = criterion_cycle(recov_253461, real_B)
-
-            loss_cycle = (loss_cycle_BA + loss_cycle_AB + loss_cycle_BC + loss_cycle_CB + loss_cycle_CA + loss_cycle_AC) / 6 + opt.lambda_merging*loss_cycle_253461
-
+            loss_cycle0 = (loss_cycle_BA + loss_cycle_AB + loss_cycle_BC + loss_cycle_CB + loss_cycle_CA + loss_cycle_AC) / 6 
+            if opt.ismerged:
+                # merging loss:
+                loss_cycle_mergedlist = []
+                if int(list(opt.mergew)[0]):
+                    recov_mAB = G_AB(G_CA(G_BC(G_CB(G_AC(G_BA(real_B))))))
+                    loss_cycle_mAB = criterion_cycle(recov_mAB, real_B)
+                    loss_cycle_mergedlist.append(loss_cycle_mAB)
+                if int(list(opt.mergew)[1]):
+                    recov_mAC = G_AC(G_BA(G_CB(G_BC(G_AB(G_CA(real_C))))))
+                    loss_cycle_mAC = criterion_cycle(recov_mAC, real_C)
+                    loss_cycle_mergedlist.append(loss_cycle_mAC)
+                if int(list(opt.mergew)[2]):
+                    recov_mBA = G_BA(G_CB(G_AC(G_CA(G_BC(G_AB(real_A))))))
+                    loss_cycle_mBA = criterion_cycle(recov_mBA, real_A)
+                    loss_cycle_mergedlist.append(loss_cycle_mBA)
+                if int(list(opt.mergew)[3]):
+                    recov_mBC = G_BC(G_AB(G_CA(G_AC(G_BA(G_CB(real_C))))))
+                    loss_cycle_mBC = criterion_cycle(recov_mBC, real_C)
+                    loss_cycle_mergedlist.append(loss_cycle_mBC)
+                if int(list(opt.mergew)[4]):
+                    recov_mCA = G_CA(G_BC(G_AB(G_BA(G_CB(G_AC(real_A))))))
+                    loss_cycle_mCA = criterion_cycle(recov_mCA, real_A)
+                    loss_cycle_mergedlist.append(loss_cycle_mCA)
+                if int(list(opt.mergew)[5]):
+                    recov_mCB = G_CB(G_AC(G_BA(G_AB(G_CA(G_BC(real_B))))))
+                    loss_cycle_mCB = criterion_cycle(recov_mCB, real_B)
+                    loss_cycle_mergedlist.append(loss_cycle_mCB)
+                loss_cycle_merged = sum(loss_cycle_mergedlist)/len(loss_cycle_mergedlist)
+                loss_cycle = loss_cycle0 + opt.lambda_merging*loss_cycle_merged
+            else:
+                loss_cycle = loss_cycle0
             # Total loss
             loss_G = loss_GAN + opt.lambda_cyc * loss_cycle
+            loss_G.backward()
+            #optimizer_G.step()
 
             # -----------------------
             #  Train Discriminator A2
             # -----------------------
+
+            #optimizer_D_A2.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_A2(real_A), valid)
@@ -537,9 +570,14 @@ if __name__ == '__main__':
             # Total loss
             loss_D_A2 = (loss_real + loss_fake) / 2
 
+            loss_D_A2.backward()
+            #optimizer_D_A2.step()
+
             # -----------------------
             #  Train Discriminator B1
             # -----------------------
+
+            #optimizer_D_B1.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_B1(real_B), valid)
@@ -549,9 +587,14 @@ if __name__ == '__main__':
             # Total loss
             loss_D_B1 = (loss_real + loss_fake) / 2
 
+            loss_D_B1.backward()
+            #optimizer_D_B1.step()
+
             # -----------------------
             #  Train Discriminator B3
             # -----------------------
+
+            #optimizer_D_B3.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_B3(real_B), valid)
@@ -561,9 +604,14 @@ if __name__ == '__main__':
             # Total loss
             loss_D_B3 = (loss_real + loss_fake) / 2
 
+            loss_D_B3.backward()
+            #optimizer_D_B3.step()
+
             # -----------------------
             #  Train Discriminator C4
             # -----------------------
+
+            #optimizer_D_C4.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_C4(real_C), valid)
@@ -573,9 +621,15 @@ if __name__ == '__main__':
             # Total loss
             loss_D_C4 = (loss_real + loss_fake) / 2
 
+            loss_D_C4.backward()
+            #optimizer_D_C4.step()
+
+
             # -----------------------
             #  Train Discriminator C5
             # -----------------------
+
+            #optimizer_D_C5.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_C5(real_C), valid)
@@ -585,9 +639,14 @@ if __name__ == '__main__':
             # Total loss
             loss_D_C5 = (loss_real + loss_fake) / 2
 
+            loss_D_C5.backward()
+            #optimizer_D_C5.step()
+
             # -----------------------
             #  Train Discriminator A6
             # -----------------------
+
+            #optimizer_D_A6.zero_grad()
 
             # Real loss
             loss_real = criterion_GAN(D_A6(real_A), valid)
@@ -597,44 +656,122 @@ if __name__ == '__main__':
             # Total loss
             loss_D_A6 = (loss_real + loss_fake) / 2
 
+            loss_D_A6.backward()
+            #optimizer_D_A6.step()
+
             loss_D = (loss_D_A2 + loss_D_B1 + loss_D_B3 + loss_D_C4 + loss_D_C5 + loss_D_A6) / 6
 
             # --------------
             #  Log Progress
             # --------------
 
+            # Determine approximate time left
+            batches_done = epoch * len(dataloader) + i
+            batches_left = opt.n_epochs * len(dataloader) - batches_done
+            time_left = datetime.timedelta(seconds=batches_left * (time.time() - prev_time))
+            prev_time = time.time()
+
             # Print log
-            sys.stdout.write(
-                "\r*[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f, adv: %f, cycle: %f] ETA: %s"
-                % (
-                    epoch,
-                    opt.n_epochs,
-                    i,
-                    len(dataloader),
-                    loss_D.item(),
-                    loss_G.item(),
-                    loss_GAN.item(),
-                    opt.lambda_cyc*loss_cycle.item(),
-                    #loss_identity.item(),
-                    "0"#time_left,
+            if opt.ismerged:
+                sys.stdout.write(
+                    "\r*[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f, adv: %f, cycle: %f, cycle0: %f, mcycle: %f] \
+                        [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] ETA: %s"
+                    % (
+                        epoch,
+                        opt.n_epochs,
+                        i,
+                        len(dataloader),
+                        loss_D.item(),
+                        loss_G.item(),
+                        loss_GAN.item(),
+                        opt.lambda_cyc*loss_cycle.item(),
+                        opt.lambda_cyc*loss_cycle0.item(),
+                        opt.lambda_cyc*opt.lambda_merging*loss_cycle_merged.item(),
+
+                        loss_D_B1.item(),
+                        opt.lambda_cyc*loss_cycle_AB.item()+loss_GAN_AB.item(),
+                        loss_GAN_AB.item(),
+                        opt.lambda_cyc*loss_cycle_AB.item(),
+
+                        loss_D_A2.item(),
+                        opt.lambda_cyc*loss_cycle_BA.item()+loss_GAN_BA.item(),
+                        loss_GAN_BA.item(),
+                        opt.lambda_cyc*loss_cycle_BA.item(),
+
+                        loss_D_B3.item(),
+                        opt.lambda_cyc*loss_cycle_CB.item()+loss_GAN_CB.item(),
+                        loss_GAN_CB.item(),
+                        opt.lambda_cyc*loss_cycle_CB.item(),
+
+                        loss_D_C4.item(),
+                        opt.lambda_cyc*loss_cycle_BC.item()+loss_GAN_BC.item(),
+                        loss_GAN_BC.item(),
+                        opt.lambda_cyc*loss_cycle_BC.item(),
+
+                        loss_D_C5.item(),
+                        opt.lambda_cyc*loss_cycle_AC.item()+loss_GAN_AC.item(),
+                        loss_GAN_AC.item(),
+                        opt.lambda_cyc*loss_cycle_AC.item(),
+                        
+                        loss_D_A6.item(),
+                        opt.lambda_cyc*loss_cycle_CA.item()+loss_GAN_CA.item(),
+                        loss_GAN_CA.item(),
+                        opt.lambda_cyc*loss_cycle_CA.item(),
+
+                        time_left
+                    )
                 )
-            )
+            else:
+                sys.stdout.write(
+                    "\r*[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f, adv: %f, cycle: %f, cycle0: %f, mcycle: %f] \
+                        [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] [%f, %f, %f, %f] ETA: %s"
+                    % (
+                        epoch,
+                        opt.n_epochs,
+                        i,
+                        len(dataloader),
+                        loss_D.item(),
+                        loss_G.item(),
+                        loss_GAN.item(),
+                        0, #opt.lambda_cyc*loss_cycle.item(),
+                        opt.lambda_cyc*loss_cycle0.item(),
+                        0,
+
+                        loss_D_B1.item(),
+                        opt.lambda_cyc*loss_cycle_AB.item()+loss_GAN_AB.item(),
+                        loss_GAN_AB.item(),
+                        opt.lambda_cyc*loss_cycle_AB.item(),
+
+                        loss_D_A2.item(),
+                        opt.lambda_cyc*loss_cycle_BA.item()+loss_GAN_BA.item(),
+                        loss_GAN_BA.item(),
+                        opt.lambda_cyc*loss_cycle_BA.item(),
+
+                        loss_D_B3.item(),
+                        opt.lambda_cyc*loss_cycle_CB.item()+loss_GAN_CB.item(),
+                        loss_GAN_CB.item(),
+                        opt.lambda_cyc*loss_cycle_CB.item(),
+
+                        loss_D_C4.item(),
+                        opt.lambda_cyc*loss_cycle_BC.item()+loss_GAN_BC.item(),
+                        loss_GAN_BC.item(),
+                        opt.lambda_cyc*loss_cycle_BC.item(),
+
+                        loss_D_C5.item(),
+                        opt.lambda_cyc*loss_cycle_AC.item()+loss_GAN_AC.item(),
+                        loss_GAN_AC.item(),
+                        opt.lambda_cyc*loss_cycle_AC.item(),
+                        
+                        loss_D_A6.item(),
+                        opt.lambda_cyc*loss_cycle_CA.item()+loss_GAN_CA.item(),
+                        loss_GAN_CA.item(),
+                        opt.lambda_cyc*loss_cycle_CA.item(),
+                        
+                        time_left
+                    )
+                )
         
-        if not opt.checkpoint_interval != -1 and (epoch % opt.checkpoint_interval == 0 or opt.n_epochs - epoch < 5):
-            continue
-        # Save model checkpoints
-        torch.save(G_AB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_AB_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(G_BA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_BA_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(G_CB.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_CB_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(G_BC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_BC_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(G_AC.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_AC_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(G_CA.state_dict(), "../3cGAN_saved_models/%s-%s-%s/G_CA_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-
-        torch.save(D_B1.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_B1_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(D_A2.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_A2_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(D_B3.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_B3_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(D_C4.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_C4_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(D_C5.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_C5_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-        torch.save(D_A6.state_dict(), "../3cGAN_saved_models/%s-%s-%s/D_A6_%dep.pth" % (opt.save_name, opt.network_name, opt.training_dataset, epoch))
-
+        # if not opt.checkpoint_interval != -1 and (epoch % opt.checkpoint_interval == 0 or opt.n_epochs - epoch < 5):
+        #     continue
+        
     print("End time:"+datetime.datetime.now().strftime("%y-%m-%d %H:%M"))

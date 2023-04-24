@@ -6,6 +6,10 @@ from utils import *
 import torch
 from datetime import datetime
 import numpy as np
+import numpy as np
+from sklearn.metrics import mean_squared_error #MSE
+from sklearn.metrics import mean_absolute_error #MAE
+from sklearn.metrics import r2_score#R 2
 print(torch.__version__)
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
@@ -99,6 +103,16 @@ val_dataloader_non_flipped = DataLoader(
     num_workers=0,
 )
 
+def ncc(data0, data1):
+    """
+    normalized cross-correlation coefficient between two data sets
+
+    Parameters
+    ----------
+    data0, data1 :  numpy arrays of same size
+    """
+    return (1.0/(data0.size-1)) * np.sum(norm_data(data0)*norm_data(data1))
+
 
 def testing():
     #os.makedirs("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-fakeB" % (opt.test_model, opt.epoch, opt.network_name), exist_ok=True)
@@ -117,6 +131,10 @@ def testing():
     G_CA.eval()
     G_CB.eval()
     G_BC.eval()
+
+    MAE =[]*6
+    RMSE = []*6
+    NCC = []*6
 
     for i, batch in enumerate(val_dataloader_non_flipped):
         real_A = Variable(batch["A"].type(Tensor))
@@ -139,7 +157,14 @@ def testing():
         fake_A6toC = G_AC(fake_A6)
         fake_B3toC = G_BC(fake_B3)
 
-
+        #调用
+        y_test = [real_B.cpu().numpy(),real_A.cpu().numpy(), real_B.cpu().numpy(),\
+                  real_C.cpu().numpy(),real_C.cpu().numpy(),real_A.cpu().numpy()]
+        y_predict = [fake_B1,fake_A2,fake_B3,fake_C4,fake_C5,fake_A6]
+        for ii in range(6):
+            MAE[ii].append(mean_absolute_error(y_test[ii],y_predict[ii]))
+            RMSE[ii].append(np.sqrt(mean_squared_error(y_test[ii], y_predict[ii])))
+            NCC[ii].append(ncc(y_test[ii],y_predict[ii]))
 
         display_imgA = torch.stack([real_A.squeeze(0).cpu(), real_B.squeeze(0).cpu(),real_C.squeeze(0).cpu(),
                                    fake_B1.squeeze(0).cpu(),fake_C5.squeeze(0).cpu(),\
@@ -163,20 +188,28 @@ def testing():
                                 fake_A6.squeeze(0).cpu(),fake_B3.squeeze(0).cpu(),\
                                 fake_A6toC.squeeze(0).cpu(), fake_B3toC.squeeze(0).cpu()], 0)
         
-        # save_image(fake_B1, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-AtoB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
-        # save_image(fake_C5, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-AtoC/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_B1, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-AtoB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_C5, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-AtoC/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
         
-        # save_image(fake_A2, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-BtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
-        # save_image(fake_C4, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-BtoC/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_A2, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-BtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_C4, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-BtoC/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
         
-        # save_image(fake_A6, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-CtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
-        # save_image(fake_B3, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-CtoB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
-        
+        save_image(fake_A6, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-CtoA/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
+        save_image(fake_B3, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-CtoB/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) #range= (0,128)
         
         save_image(display_imgA, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/A-Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False) 
         save_image(display_imgB, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/B-Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False)
         save_image(display_imgC, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/C-Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),normalize=False, scale_each=False)
         save_image(display_img, "../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/Est-Depths-%s.png" % (opt.test_model, opt.epoch, opt.network_name, num),nrow=7, normalize=False, scale_each=False)
+
+    with open("../3cGAN_test_outputs/%s-%sep-%s-Est-Depths-display/"% (opt.test_model, opt.epoch, opt.network_name),'0') as f:
+        for ii in range(6):
+            f.write(str(np.mean(MAE[ii])))
+            f.write(" ")
+            f.write(str(np.mean(RMSE[ii])))
+            f.write(" ")
+            f.write(str(np.mean(NCC[ii])))
+            f.write("\n")
 
 testing()
 
@@ -191,24 +224,6 @@ def norm_data(data):
     return (data-mean_data)/(std_data)
 
 
-def ncc(data0, data1):
-    """
-    normalized cross-correlation coefficient between two data sets
 
-    Parameters
-    ----------
-    data0, data1 :  numpy arrays of same size
-    """
-    return (1.0/(data0.size-1)) * np.sum(norm_data(data0)*norm_data(data1))
 
-"""
-import numpy as np
-from sklearn.metrics import mean_squared_error #MSE
-from sklearn.metrics import mean_absolute_error #MAE
-from sklearn.metrics import r2_score#R 2
-#调用
-mean_squared_error(y_test,y_predict)
-mean_absolute_error(y_test,y_predict)
-np.sqrt(mean_squared_error(y_test,y_predict))  # RMSE就是对MSE开方即可
-r2_score(y_test,y_predict)
-"""
+
